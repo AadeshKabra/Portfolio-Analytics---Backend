@@ -91,7 +91,7 @@ def get_access_token(request_token):
         "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36"
     }
     data = {
-        "apiSecret": "f910408b63c54780887579fdd2525bcf"  # Replace with your actual API secret
+        "apiSecret": HDFC_OPENAPI_SECRET  # Replace with your actual API secret
     }
 
     response = requests.post(url, params=params, headers=headers, json=data)

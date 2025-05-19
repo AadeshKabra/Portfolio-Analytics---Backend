@@ -89,8 +89,8 @@
 #     logger.error("An error occured")
 
 
-HDFC_api = "67024e70604543e380948578e0091f99"
-HDFC_api_secret = "f910408b63c54780887579fdd2525bcf"
+HDFC_api = ""
+HDFC_api_secret = ""
 
 
 import requests
@@ -122,8 +122,8 @@ headers = {
     "Content-Type": "application/json"
 }
 data = {
-    "username": "157212706",
-    "password": "aadesh19"
+    "username": "***",
+    "password": "***"
 }
 
 response = requests.post(url, headers=headers, params=params, json=data)
