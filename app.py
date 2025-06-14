@@ -9,6 +9,7 @@ from kiteconnect import KiteConnect
 from urllib3 import request
 from serpapi import GoogleSearch
 from datetime import datetime
+import pandas as pd
 
 
 def get_holdings():
@@ -41,6 +42,20 @@ def get_stock_news(stock):
     return sorted_news
 
 
+def get_historical_data(stock, time_period="1m"):
+    url = "https://stock.indianapi.in/historical_data"
+
+    querystring = {"stock_name": stock, "period": time_period, "filter": "price"}
+    headers = {"X-Api-Key": INDIAN_STOCK_API_KEY}
+
+    response = requests.get(url, headers=headers, params=querystring)
+
+    historical_data = response.json()["datasets"][0]["values"]
+    # print(historical_data)
+    # print(response.json())
+    return historical_data
+
+
 app = FastAPI()
 
 origins = ["*"]
@@ -55,10 +70,9 @@ app.add_middleware(
 load_dotenv()
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-HDFC_OPENAPI_KEY = os.getenv("HDFC_OPENAPI_KEY")
-HDFC_OPENAPI_SECRET = os.getenv("HDFC_OPENAPI_SECRET")
 FRONTEND_URL = os.getenv("FRONTEND_URL")
 GOOGLE_SERPAPI_KEY = os.getenv("GOOGLE_SERPAPI_KEY")
+INDIAN_STOCK_API_KEY = os.getenv("INDIAN_STOCK_API_KEY")
 
 api_key = os.getenv("ZERODHA_API_KEY")
 api_secret = os.getenv("ZERODHA_API_SECRET")
@@ -94,7 +108,7 @@ async def kite_callback(request: Request):
 async def holdings():
     holdings = get_holdings()
     # print(holdings)
-    return JSONResponse({"holdings": holdings})
+    return {"holdings": holdings}
 
 
 @app.get("/stock_news")
@@ -102,6 +116,19 @@ async def stock_news(stock: str):
     print("Reached stock news")
     news = get_stock_news(stock)
     return JSONResponse({"News": news})
+
+
+@app.get("/stock_history")
+async def stock_history(stock: str):
+    historical_data = get_historical_data(stock)
+    return JSONResponse({"historicalData": historical_data})
+
+
+@app.get("/sector_pie_chart")
+async def sector_pie_chart():
+    holdings = get_holdings()
+    print(holdings)
+    return JSONResponse({"Return": "Yes"})
 
 
 if __name__ == "__main__":
