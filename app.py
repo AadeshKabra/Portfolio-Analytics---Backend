@@ -107,7 +107,7 @@ async def kite_callback(request: Request):
 @app.get("/holdings")
 async def holdings():
     holdings = get_holdings()
-    # print(holdings)
+    print(holdings["data"])
     return {"holdings": holdings}
 
 
@@ -128,6 +128,49 @@ async def stock_history(stock: str):
 async def sector_pie_chart():
     holdings = get_holdings()
     print(holdings)
+    return JSONResponse({"Return": "Yes"})
+
+
+@app.get("/generateDB")
+async def generate_db():
+    holdings = get_holdings()
+    stocks = []
+    for holding in holdings["data"]:
+        stocks.append(holding["tradingsymbol"])
+
+    stock_history = {}
+    stock_news = {}
+    # for stock in stocks:
+    #     historical_data = get_historical_data(stock, time_period="6m")
+    #     stock_history[stock] = historical_data
+    #
+    #     news = get_stock_news(stock)
+    #     stock_news[stock] = news[:10]
+    #
+    # print(stock_history)
+    # print(stock_news)
+
+    url = "https://api.kite.trade/instruments/historical/12517890/minute"
+
+    params = {
+        "from": "2019-12-04 09:15:00",
+        "to": "2019-12-04 09:20:00",
+        "oi": "1"
+    }
+
+    headers = {
+        "X-Kite-Version": "3",
+        "Authorization": f"token {api_key}:{access_token}"  # Replace with actual values
+    }
+
+    response = requests.get(url, params=params, headers=headers)
+
+    if response.ok:
+        data = response.json()
+        print(data)
+    else:
+        print("Error:", response.status_code, response.text)
+
     return JSONResponse({"Return": "Yes"})
 
 
