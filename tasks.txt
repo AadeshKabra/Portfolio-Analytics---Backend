@@ -1,1 +1,2 @@
 1. Web Scraping News to get real-time insights
+2. A page to study single share
